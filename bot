@@ -1,0 +1,19 @@
+#!/usr/bin/python3
+
+import requests
+import sys
+
+def get_url(url):
+	res = requests.get(url)
+	content = res.content.decode("utf-8")
+	return 0
+
+def send(api,msg):
+    URL = "https://api.telegram.org/bot{0}/".format(api)
+    chatid=1154530812
+    url = URL+ "sendMessage?chat_id={0}&text={1}".format(chatid,msg)
+    print(url)
+    get_url(url)
+
+send("1446427088:AAF33_4m-xNosGz8A3oFqyWS6Nc44CSng6I",sys.argv[1])
+

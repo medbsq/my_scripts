@@ -1,0 +1,8 @@
+#!/bin/bash 
+
+touch my_jls
+
+tele my_jls &
+
+jaeles scan -c 5000 -s ~/jaeles-signatures/  -U $1 |tee -a my_jls
+#cat $1 |xargs -n 1 -P 200 -I {} bash -c " jaeles scan -c 5000 -s ~/jaeles-signatures/  -u '{}' |tee -a my_jls "

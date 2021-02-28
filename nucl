@@ -1,0 +1,13 @@
+#!/bin/bash 
+
+function nucl(){
+	mkdir -p ./ncl
+	filename=./ncl/$(echo "$1" | sha256sum |awk '{print $1}')
+	echo $1 |nuclei  -t ~/nuclei-templates/cves -t ~/nuclei-templates/fuzzing -t ~/nuclei-templates/security-misconfiguration   -t ~/nuclei-templates/vulnerabilities -t ~/nuclei-templates/subdomain-takeover -t ~/nuclei-templates/generic-detections -t ~/nuclei-templates/misc  -t ~/nuclei-templates/tokens   -t ~/nuclei-templates/files      -t ~/nuclei-templates/fuzzing -o $filename -c 100  
+
+}
+
+
+cat $1 |grep -fv ./ncl/d.txt &> /dev/null
+export -f nucl 
+cat $1 |xargs -n 400 |xargs -n 1 -P 200 -I {} bash -c 'nucl  "$@"' _ {} 

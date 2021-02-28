@@ -1,0 +1,38 @@
+
+gospider -S Hosts -o output -c 100 -d 1 --other-source --include-subs --blacklist ".(jpg|jpeg|gif|css|tif|tiff|png|ttf|woff|woff2)"
+
+
+cat $1|grep favico |cut -d " " -f 1,4 |cut -d ":" -f 2,3 |sed "s/\]//g" |sort -u  >>favicon
+
+
+cat all3 |httpx -threads 5000 -status-code -path "/.env" -content-type  -content-length -title   -timeout 4 -retries 0|tee -a env_
+
+
+dirsearch -r -b -w ~/wordlist/api_route.txt -u https://auth.zappos.com  -i 200,403,401,302 -e php,html,json,aspx,sql,asp,js --plain-text-report dirseach/auth.txt
+
+
+cat $1 |xargs -I {} bash "./scripts/subbrute.py lists/names.txt {} | ./bin/massdns -r lists/resolvers.txt -t A -o S -w {}"
+
+
+cat Hosts 2 4 3 |sort -u |xargs -I {} -n 1 bash -c " echo {} |httpx -H 'Host: $(echo  {} |sha256sum |awk '{print $1}' ).hyjzhdij77rwjrl1b16x8c3m4da5yu.burpcollaborator.net '"
+
+cat * |cut -d " " -f 1 |sed "s/\.$//g" |sort -u | httpx -threads 500 |tee -a brute_host
+
+./github-endpoints.py -t a516408ce9862991c4dd1e01ada88fae5ff8a488  -d zappos.com |tee -a ~/invitation/zappos_program/github-endpoints.txt
+
+xargs -a jsfile -I {} sh -c "python3SecretFinder.py -i {} -o cli" |tee -a betterhelp
+ 
+cat zappos.txt |grep -oiEh "https?://[^\"\\'> ]+" |sort -uo js_file
+
+
+xargs	-a $1 -I {} sh -c "ffuf -u {}/FUZZ -w ~/tools/Wordlists/SecLists/Discovery/Web-Content/raft-large-files.txt -of md -o ./ffuf/{} -t 1000"
+
+curl -k -s -o /dev/null -w "%{size_download}\n" https://google.com
+
+ffuf -w cc/all/Hosts -u FUZZ/js/routing?callback= -mc 200 -of md  -o ./cc/all/js_routing.txt  -t 800
+
+
+cat url.txt| cut -d "/" -f 4,5 |sed "s/?.*//" |sort -u -o wordlist
+
+
+iBaseURL  matchers severity language:yaml -user:storenth -org:ProjectDiscovery -org:ARPSyndicate -user:Sharwinreddy

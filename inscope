@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+read  url 
+echo $url | grep -f ./scope 
+

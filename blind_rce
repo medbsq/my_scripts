@@ -1,0 +1,4 @@
+#!/bin/bash
+
+
+cat $1| assetfinder --subs-only |httpx -silent |gau |qsreplace -a ' || curl http://$2' |htt

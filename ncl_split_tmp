@@ -1,0 +1,18 @@
+#!/bin/bash
+
+
+# url file to scan 
+#split taille
+#nuclei template
+$sevirity
+
+split -l $2 $1  host_
+for file in $(ls host_* );do
+	
+	nuclei -l $file  -t $3 -stats -timeout 5 -silent -severity $4 | tee -a nuclei_split
+	rm -rf $file
+
+done
+
+
+

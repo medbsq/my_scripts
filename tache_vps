@@ -1,0 +1,27 @@
+#!/bin/bash 
+
+
+function nucl(){
+        filename="$(echo "$1" | sha256sum |awk '{print $1}')"
+	echo $1  |nuclei  -t ~/nuclei-templates/ -exclude ~/nuclei-templates/subdomain-takeover/ -exclude ~/nuclei-templates/technologies/ -exclude ~/nuclei-templates/misc/missing-hsts.yaml -exclude ~/nuclei-templates/misc/missing-x-frame-options.yaml  -exclude ~/nuclei-templates/misc/missing-csp.yaml  -exclude ~/nuclei-templates/fuzzing/basic-auth-bruteforce.yaml  -c 100 -retries 2  |tee -a ./ncl/$filename 
+	cat ./ncl/$filename |xargs -n1 - I {} bash -c 'curl -s "https://api.telegram.org/bot1446427088:AAF33_4m-xNosGz8A3oFqyWS6Nc44CSng6I/sendMessage?chat_id=1154530812&text=${}"'
+	cat h_tache |grep -v "$1" |sort -uo h_tachie
+
+
+}
+
+
+
+cd ~/app
+
+mkdir -p ./ncl
+
+export -f nucl 
+if [[ -d h_tache ]];then  
+	cat Hosts |sort -uo h_tache
+fi
+
+cat  h_tache |xargs -n 1 -P 50 -I {} bash -c 'nucl  "$@"' _ {}
+
+
+rsync  -azp  ~/app/ncl/  medbsq@161.35.84.62:~/app/

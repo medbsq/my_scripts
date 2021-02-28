@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#1 url list
+#2 wordlist 
+#3 directory_output
+
+
+for i in $(cat $1);do
+	filename=$(echo $i |sha256sum |awk '{print $1}')
+	ffuf -u $i/FUZZ -w $2 -of md -o ./$3/$filename -t 800
+done
+
+
+

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+#1 url list
+#2 wordlist 
+#3 directory_output
+
+
+for i in $(cat $1);do
+	filename=$(echo $i |sha256sum |awk '{print $1}')
+	echo "$i     $filename" >> ./$2/index.txt
+done
+
+
+

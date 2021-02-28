@@ -1,0 +1,107 @@
+#!/bin/bash 
+
+function dir_pre(){
+	mkdir -p report
+	touch ./report/nuclei_result
+	touch ./report/jaeles_result
+}
+
+function nucl(){
+	echo -e "\e[32m  start nuclei ..... \e[0m"
+	tele ./report/nuclei_result &
+	cat $1 |xargs -n 1 -P 20 -I {} bash -c " nuclei  -t ./nuclei-templates  -target {} -silent   -timeout 10 -c 50 -retries 2 |tee -a ./report/nuclei_result "
+	cat $1 |xargs -n 1 -P 20 -I {} bash -c " nuclei  -t ./costum_tmp  -target {} -silent   -timeout 10 -c 50 -retries 2 |tee -a ./report/nuclei_result "
+	find ./nuclei-templates -iname "*.yaml" >> ./report/templates
+	find ./costum_tmp -iname "*.yaml" >> ./report/templates
+
+	killall -9 tele &> /dev/null
+	rm -rf ./nuclei-templates 
+	rm -rf ./costum_tmp
+}
+
+function jael(){
+	echo  -e "\e[32m  start jaeles ..... \e[0m"
+	tele ./report/jaeles_result &
+	jaeles scan -c 500 -s ./jaeles-signatures/  -u "$1" |tee -a ./report/jaeles_result
+	find ./jaeles-signatures/ -iname "*.yaml" >> ./report/templates
+	killall -9 tele  &> /dev/null
+	rm -rf ./jaeles-signatures  
+}
+
+function temp_new(){
+	cp -r ~/jaeles-signatures ./
+	cp -r ~/nuclei-templates  ./
+	cp -r ~/ncl/costum_tmp    ./costum_tmp
+}
+
+function temp(){
+	cp -r ~/jaeles-signatures ./
+	cp -r ~/nuclei-templates  ./
+	cp -r ~/ncl/costum_tmp    ./costum_tmp
+	if [[ -f  ./fw/templates ]] ;then
+		for i in $(cat ./fw/templates );do 
+			find ./costum_tmp -iname "$i" -exec /bin/rm {} \; || find ./jaeles-signatures -iname "$i" -exec /bin/rm {} \; || find ./nuclei-templates -iname "$i" -exec /bin/rm {} \;
+		done
+	fi
+}
+
+function merge(){
+	mkdir -p ./fw
+	cat ./report/templates |awk -F "/" '{print $NF}' >> ./fw/templates
+	cat ./report/nuclei_result >> ./fw/nuclei_result
+	cat ./report/jaeles_result >> ./fw/jaeles_result
+	cat $1 >> ./fw/Hosts
+	cat ./fw/Hosts |sort -uo ./fw/Hosts
+	rm -rf ./report 
+}
+
+function old(){
+      #  if [[ -f  ./fw/Hosts ]] ;then
+		dir_pre
+        	temp
+	        nucl ./fw/Hosts
+	        jael ./fw/Hosts
+	        merge ./fw/Hosts
+#	fi
+
+}
+
+function new(){
+                dir_pre
+                temp_new
+                nucl $1 
+                jael $1
+                merge $1
+
+}
+
+
+while getopts ":n:a" OPTION
+do
+        case $OPTION in
+                 a)
+			old 
+                        ;;
+                 n)
+			old		 
+			new "$OPTARG"
+                        ;;
+
+		:)
+                        help
+                        exit 1
+                        ;;
+                \?)
+                        help
+                        exit 1
+                        ;;
+
+        esac
+done
+
+
+
+
+
+
+

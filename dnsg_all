@@ -1,0 +1,12 @@
+#!/bin/bash
+
+
+       cat crobat.txt Hosts |sort -uo Hosts && rm crobat.txt
+	for asset in $(cat ./scope );do
+		python3 ~/vps/git_domains.py -d $asset -t dcc70d8aa542cc1d25191edcc92a7b922008108d |httpx -threads 200 -retries 3 |tee -a Hosts 
+	done
+
+	xargs -a  Hosts  -I@ sh -c 'echo @' | dnsgen - | httpx -silent -threads 10000 |tee  -a Hosts2
+	
+	cd - &> /dev/null
+

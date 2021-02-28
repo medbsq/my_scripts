@@ -1,0 +1,9 @@
+#!/bin/bash 
+mkdir -p  fuzzer
+for  i in $( cat $1);do 
+	echo  $2$i | tee -a w.txt
+done
+
+cat w.txt |httpx -threads 500 -status-code -location -retries 2 | tee -a ./fuzzer/$2_$1
+rm -r w.txt 
+
