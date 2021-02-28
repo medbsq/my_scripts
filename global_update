@@ -1,0 +1,15 @@
+#!/bin/bash 
+
+#update template
+cd ~/tools/pikpik/nuclei/ && git pull && cd - 2&> /dev/null
+nuclei -update-templates
+
+
+#scan prog
+for  prog in $(find  ./ -maxdepth 1 -type d );do
+	cd $prog
+	~/my_scripts/ncl_split2 Hosts update_nuclei ~/tools/pikpik/nuclei/ high,critical,medium,low
+	~/my_scripts/ncl_split2 Hosts update_nuclei ~/nuclei-templates/ high,critical,medium,low
+	cd -  2&> /dev/null
+done
+
