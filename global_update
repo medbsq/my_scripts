@@ -6,7 +6,7 @@ nuclei -update-templates 2&> /dev/null
 
 cd ~/global
 pwd 
-find  ./ -maxdepth 1 -type d
+find  ./ -maxdepth 1 -type d |rev |cut -d "/" -f 1|rev 
 #scan prog
 for  prog in $(find  ./ -maxdepth 1 -type d );do
 	cd $prog
