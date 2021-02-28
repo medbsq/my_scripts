@@ -1,7 +1,7 @@
 #!/bin/bash 
 
 #update template
-cd ~/tools/pikpik/nuclei/ && git pull && cd - 2&> /dev/null
+cd ~/tools/pikpik/ && git pull && cd - 2&> /dev/null
 nuclei -update-templates
 
 
