@@ -3,12 +3,11 @@
 #update template
 cd ~/tools/pikpik/ && git pull && cd - 2&> /dev/null
 nuclei -update-templates 2&> /dev/null
-
 cd ~/global
-pwd 
-find  ./ -maxdepth 1 -type d |rev |cut -d "/" -f 1|rev 
+
+
 #scan prog
-for  prog in $(find  ./ -maxdepth 1 -type d );do
+for  prog in $(find  ./ -maxdepth 1 -type d |rev |cut -d "/" -f 1|rev);do
 	cd $prog
 	pwd
 	#~/my_scripts/ncl_split2 Hosts update_nuclei ~/tools/pikpik/nuclei/ high,critical,medium,low
