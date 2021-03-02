@@ -39,7 +39,7 @@ if [ -f scope ];then
 	subfinder -dL ./scope  |tee -a Domains
 	for i in $(cat ./scope);do
 		~/my_scripts/asset $i 
-		~/my_scripts/git_domains -d $i -t 10c8825153b9d0cf8d383c447256a47b99a0e12b |tee -a Domains
+		~/my_scripts/git_domains -d $i -t $github_api |tee -a Domains
         done
 	cat Domains|grep ".$i" | sort -u -o Domains
 	cat Domains | httpx -threads 500 |tee -a Hosts 

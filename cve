@@ -1,7 +1,0 @@
-#!/bin/bash 
-
-touch cves_result 
-
-tele cves_result &
-
-cat $1 |nuclei  -t ~/nuclei-templates/  |tee -a nuclei_result
