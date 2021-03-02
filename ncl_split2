@@ -25,7 +25,7 @@ cd -
 
 # create  split for  scan file if  doesn t exist
 if [[ ! $(find ./ -iname "host_*") ]]; then
-	split -l 1000 $1  host_
+	split -l 400 $1  host_
 fi
 
 echo "step 2 : scan"
