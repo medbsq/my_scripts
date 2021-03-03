@@ -6,7 +6,7 @@ while true; do
 	cd ~/nuclei-templates && git pull &&cd - 2&> /dev/null
 	for pog in $(find ./ -maxdepth 1 -type d);do
 		cd prog
-		subfinder -dL scope -all | anew Domains | httpx -silent  | nuclei -silent -t ~/tools/pikpik/nuclei -t ~/nuclei-templates -severity critical,high,medium,low   -timeout 5 -c 800  -o out_nucl| notify ;
+		subfinder -dL scope -all | anew Domains | httpx -silent  | nuclei -silent -t ~/tools/pikpik/nuclei -t ~/nuclei-templates -severity critical,high,medium,low   -timeout 5 -c 800  -o out_nucl| notify  -silent;
 		cat out_nucl >> nuclei_split && rm  -rf out_nucl 
 		cd - 2&> /dev/null
 	done
