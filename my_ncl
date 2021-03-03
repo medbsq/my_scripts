@@ -1,7 +1,0 @@
-#!/bin/bash 
-
-touch my_result 
-
-tele my_result &
-
-cat $1 |xargs -n 1 -P 200 -I {} bash -c " nuclei  -t ~/ncl/costum_tmp -target {} -no-color -timeout 10 -c 100 -retries 2 |tee -a my_result "
