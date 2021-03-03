@@ -8,7 +8,6 @@ RESET=$(tput sgr0)
 AMASS_VERSION=3.8.2
 
 
-logo(){}
 
 
 
