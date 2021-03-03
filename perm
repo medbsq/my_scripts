@@ -2,13 +2,13 @@
 
 
 while true; do
-	#cd ~/tools/pikpik && git pull &&cd - 2&> /dev/null
-	#cd ~/nuclei-templates && git pull &&cd - 2&> /dev/null
+	#cd ~/tools/pikpik && git pull && cd - 2&> /dev/null
+	#cd ~/nuclei-templates && git pull && cd - 2&> /dev/null
 	for prog in $(find ./ -maxdepth 1 -type d);do
 		cd $prog
 #		subfinder -dL scope -all | anew Domains | httpx -silent  | nuclei -silent -t ~/tools/pikpik/nuclei -t ~/nuclei-templates -severity critical,high,medium,low   -timeout 5 -c 800  |anew  out_nucl| notify  -silent; 
 	echo $prog
-		cd - 2&> /dev/null
+		cd - 
 	done
 	sleep 7200
 done
