@@ -1,0 +1,24 @@
+#!/bin/bash 
+
+path=""
+scope=$1
+hosts=""
+
+#get urls
+function get_urls(){
+	for url in $(cat $scope );do
+		echo $url |waybackurls |tee -a urls.txt
+		echo $url |gau  |tee -a urls.txt
+	done	
+}
+
+function spider(){
+	gospider -S $hosts -o output -c 100 -d 1 --other-source --include-subs 
+	cat ./output/* /* |grep  -oiEh "https?://[^\"\\'> ]+" |sort -u |tee -a urls.txt 
+	rm -rf ./output
+}
+
+#classification
+function classify(){
+	cat urls.txt |unfurl -u keys |sort -u |tee -a parameters.txt
+}
