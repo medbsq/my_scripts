@@ -1,8 +1,14 @@
 #!/bin/bash 
 
-path=""
-scope=$1
-hosts=""
+
+
+
+
+path="parameters_dir"
+scope=../scope
+hosts=../Hosts
+fuzz_list=../$1
+colab=$2
 
 #get urls
 function get_urls(){
@@ -21,4 +27,40 @@ function spider(){
 #classification
 function classify(){
 	cat urls.txt |unfurl -u keys |sort -u |tee -a parameters.txt
+	cat urls.txt | unfurl format ?%q |sort -u |tee -a multiple_param.txt
 }
+
+#fuzz 
+function create_param_string(){
+	cat multiple_param.txt  | qsreplace "$colab"|sort -uo multiple_param.txt
+	# try do  create a function to send one parameter value each time 
+}
+
+function fuzz(){
+	# ffuf -w parameters.txt:PARAM -w $fuzz_list:URL -u "URL?PARAM=$colab" -t 100
+	ffuf -w multiple_param.txt:PARAM -w $fuzz_list:URL -u URLPARAM -t 100 
+}
+
+function main(){
+	mkdir -p $path && cd $path
+	# echo " $path $scope   $hosts    $fuzz_list"
+	echo "get urls"
+	get_urls
+	# spider
+	# echo "$cola"
+	echo "classify"
+	classify
+	echo "create parameter"
+	create_param_string
+	fuzz
+}
+
+if [[ ! $# == 2 ]];then
+	echo "you shoud enter host file to fuzz and colab server !!!!"
+	exit ;
+
+else
+	main
+	
+fi
+
