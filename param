@@ -41,6 +41,40 @@ function fuzz(){
 	ffuf -w multiple_param.txt:PARAM -w $fuzz_list:URL -u URLPARAM -t 100 
 }
 
+function verify_tools(){
+	#wayback
+	if ! command -v "waybackurls" &> /dev/null
+	then
+    	tool="waybackurls"
+		return 0
+	fi
+	#gau
+	if ! command -v "gau" &> /dev/null
+	then
+		tool="gau"
+		return 0
+	fi
+	# #gospider
+	# if ! command -v "gospider" &> /dev/null
+	# then
+    # 	tool="gospider"
+	# 	return 0
+	# fi
+	#ffuf
+	if ! command -v "ffuf" &> /dev/null
+	then
+    	tool="ffuf"
+		return 0
+	fi
+	#qsreplace
+	if ! command -v "qsreplace" &> /dev/null
+	then
+    	tool="qsreplace"
+		return 0
+	fi
+
+}
+
 function main(){
 	mkdir -p $path && cd $path
 	# echo " $path $scope   $hosts    $fuzz_list"
@@ -55,12 +89,16 @@ function main(){
 	fuzz
 }
 
+verify_tools
 if [[ ! $# == 2 ]];then
 	echo "you shoud enter host file to fuzz and colab server !!!!"
 	exit ;
-
+elif [[ $tool ]] ;then
+	echo "you shood install all the tools ,$tool is missing !!!"
+	echo " \n this script neen the following toolsto work : ffuf,gau,gospider,waybackurls,qsreplace"
+	exit ;
 else
-	main
-	
+	# main
+	echo "no problem"
 fi
 
