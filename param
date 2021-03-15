@@ -37,7 +37,7 @@ function create_param_string(){
 }
 
 function fuzz(){
-	# ffuf -w parameters.txt:PARAM -w $fuzz_list:URL -u "URL?PARAM=$colab" -t 100
+	ffuf -w parameters.txt:PARAM -w $fuzz_list:URL -u "URL?PARAM=$colab" -t 100
 	ffuf -w multiple_param.txt:PARAM -w $fuzz_list:URL -u URLPARAM -t 100 
 }
 
@@ -46,31 +46,41 @@ function verify_tools(){
 	if ! command -v "waybackurls" &> /dev/null
 	then
     	tool="waybackurls"
-		return 0
+		echo "you shood install all the tools , $tool is missing !!!"
+		echo "this script neen the following toolsto work : ffuf,gau,gospider,waybackurls,qsreplace"
+		exit ;
 	fi
 	#gau
 	if ! command -v "gau" &> /dev/null
 	then
 		tool="gau"
-		return 0
+		echo "you shood install all the tools ,$tool is missing !!!"
+		echo "this script neen the following toolsto work : ffuf,gau,gospider,waybackurls,qsreplace"
+		exit ;
 	fi
-	# #gospider
-	# if ! command -v "gospider" &> /dev/null
-	# then
-    # 	tool="gospider"
-	# 	return 0
-	# fi
+	#gospider
+	if ! command -v "gospider" &> /dev/null
+	then
+    	tool="gospider"
+		echo "you shood install all the tools ,$tool is missing !!!"
+		echo "this script neen the following toolsto work : ffuf,gau,gospider,waybackurls,qsreplace"
+		exit ;
+	fi
 	#ffuf
 	if ! command -v "ffuf" &> /dev/null
 	then
     	tool="ffuf"
-		return 0
+		echo "you shood install all the tools ,$tool is missing !!!"
+		echo "this script neen the following toolsto work : ffuf,gau,gospider,waybackurls,qsreplace"
+		exit ;
 	fi
 	#qsreplace
 	if ! command -v "qsreplace" &> /dev/null
 	then
     	tool="qsreplace"
-		return 0
+		echo "you shood install all the tools ,$tool is missing !!!"
+		echo " this script neen the following toolsto work : ffuf,gau,gospider,waybackurls,qsreplace"
+		exit ;
 	fi
 
 }
@@ -89,15 +99,12 @@ function main(){
 	fuzz
 }
 
-verify_tools
+
 if [[ ! $# == 2 ]];then
 	echo "you shoud enter host file to fuzz and colab server !!!!"
 	exit ;
-elif [[ $tool ]] ;then
-	echo "you shood install all the tools ,$tool is missing !!!"
-	echo " \n this script neen the following toolsto work : ffuf,gau,gospider,waybackurls,qsreplace"
-	exit ;
 else
+	verify_tools
 	# main
 	echo "no problem"
 fi

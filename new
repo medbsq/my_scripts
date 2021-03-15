@@ -36,7 +36,7 @@ cd ./$1_program
 mv ../$1 ./scope
 if [ -f scope ];then
 	assetfinder -subs-only {}|tee -a Domains 
-	subfinder -dL ./scope  |tee -a Domains
+	subfinder -dL ./scope -all -t 500 |tee -a Domains
 	for i in $(cat ./scope);do
 		~/my_scripts/asset $i 
 		~/my_scripts/git_domains -d $i -t $github_api |tee -a Domains
