@@ -46,6 +46,6 @@ if [ -f scope ];then
 	cat Hosts   |sort -u -o Hosts
 		
 fi
- xargs -a Hosts -I@ sh -c 'echo @'|dnsgen -|httpx -threads 1000 -silent |tee -a Hosts2
- cat Hosts Hosts2 |sort -uo Hosts 
- rm -rf Hosts2
+# xargs -a Hosts -I@ sh -c 'echo @'|dnsgen -|httpx -threads 1000 -silent |tee -a Hosts2
+ #cat Hosts Hosts2 |sort -uo Hosts 
+ #rm -rf Hosts2
