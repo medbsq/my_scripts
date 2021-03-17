@@ -1,0 +1,6 @@
+#!/bin/bash 
+
+for  domain in $(cat $1 ) ;do 
+	dig $domain |grep  -i ec2 |tee -a ec2.txt 
+done
+
