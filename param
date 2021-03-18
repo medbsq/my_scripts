@@ -59,13 +59,13 @@ function verify_tools(){
 		exit ;
 	fi
 	#gospider
-	if ! command -v "gospider" &> /dev/null
-	then
-    	tool="gospider"
-		echo "you shood install all the tools ,$tool is missing !!!"
-		echo "this script neen the following toolsto work : ffuf,gau,gospider,waybackurls,qsreplace"
-		exit ;
-	fi
+	# if ! command -v "gospider" &> /dev/null
+	# then
+    # 	tool="gospider"
+	# 	echo "you shood install all the tools ,$tool is missing !!!"
+	# 	echo "this script neen the following toolsto work : ffuf,gau,gospider,waybackurls,qsreplace"
+	# 	exit ;
+	# fi
 	#ffuf
 	if ! command -v "ffuf" &> /dev/null
 	then
