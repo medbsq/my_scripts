@@ -37,9 +37,8 @@ function create_param_string(){
 }
 
 function fuzz(){
-	ffuf -w parameters.txt:PARAM -w $fuzz_list:URL -u "URL?PARAM=$colab" -t 100
-	ffuf -w multiple_param.txt:PARAM -w $fuzz_list:URL -u URLPARAM -t 100 
-}
+	ffuf -w parameters.txt:PARAM -w $fuzz_list:URL -u "URL?PARAM=$colab" 
+	ffuf -w multiple_param.txt:PARAM -w $fuzz_list:URL -u URLPARAM 
 
 function verify_tools(){
 	#wayback
