@@ -11,5 +11,7 @@ function test_it(){
 for i in $(cat $file);do
     normal=$(curl -s -o /dev/null -w "%{http_code} %{size_download}"   $i)
     modified=$(curl -s -o /dev/null -w "%{http_code} %{size_download}"  -H "Host: $host" $i)
-    echo -e " $i \033[0;31m[$normal]  \033[0;32m[$modified]\033[0m" |tee -a host_header_test.out
+    if [[ ! $normal == $modified ]];then
+        echo -e " $i \033[0;31m[$normal]  \033[0;32m[$modified]\033[0m" |tee -a host_header_test.out
+    fi
 done
