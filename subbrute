@@ -2,17 +2,23 @@
 
 host=$1
 resolvers=$2
+wordlist=$3
 
 
 for i in $( seq 2 10);do
 	cat $host |grep -Po "(\.[\w-]+){$i}$"|sort -u  |sed "s/^.//g" |tee -a  deeplevels.txt
 done
 
+
+
 #bruteforce
-massdns	 deeplevels.txt -r $resolvers -o S -t A -q |awk -F ". " "{print $1}" |sort -u |httpx -threads 100 |tee -a deeplevels_rslv.txt
+# massdns	 deeplevels.txt -r $resolvers -o S -t A -q |awk -F ". " "{print $1}" |sort -u |httpx -threads 100 |tee -a deeplevels_rslv.txt
+for h in $(cat  deeplevels.txt);do
+	./scripts/subbrute.py $wordlist  $h | massdns -r $resolvers -t A -o S -q |awk -F ". " "{print $1}" |sort -u |httpx -threads 100 |tee -a deeplevels_rslv.txt
+done 
 
 # gett only unique subds
-cat $host |sort -uo $host
-cat deeplevels_rslv.txt |sort -uo deeplevels_rslv.txt
-comm -13 $host deeplevels_rslv.txt |sort -uo deeplevels_rslv.txt
+# cat $host |sort -uo $host
+# cat deeplevels_rslv.txt |sort -uo deeplevels_rslv.txt
+# comm -13 $host deeplevels_rslv.txt |sort -uo deeplevels_rslv.txt
 
