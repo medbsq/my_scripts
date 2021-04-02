@@ -1,0 +1,18 @@
+#!/bin/bash
+
+host=$1
+resolvers=$2
+
+
+for i in $( seq 2 10);do
+	cat $host |grep -Po "(\.[\w-]+){$i}$"|sort -u  |sed "s/^.//g" |tee -a  deeplevels.txt
+done
+
+#bruteforce
+massdns	 deeplevels.txt -r $resolvers -o S -t A -q |awk -F ". " "{print $1}" |sort -u |httpx -threads 100 |tee -a deeplevels_rslv.txt
+
+# gett only unique subds
+cat $host |sort -uo $host
+cat deeplevels_rslv.txt |sort -uo deeplevels_rslv.txt
+comm -13 $host deeplevels_rslv.txt |sort -uo deeplevels_rslv.txt
+
