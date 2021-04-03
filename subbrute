@@ -15,7 +15,10 @@ cat  deeplevels.txt |sort -uo deeplevels.txt
 #bruteforce
 for hs in $(cat  deeplevels.txt);do
 	awk -v h=$hs '{print $0"."h}' $wordlist  >> list.txt
-	massdns list.txt -r $resolvers -t A -o S -q |awk -F ". " "{print $1}" |sort -u |httpx -silent  -threads 100 |tee -a deeplevels_rslv.txt
+	echo "massdns worke with $hs"
+	massdns list.txt -r $resolvers -t A -o S -w deepdomain.txt -q 
+	echo "massdns end with $hs"
+	cat deepdomain.txt |awk -F ". " "{print $1}" |sort -u |httpx -silent  -threads 100 |tee -a deeplevels_rslv.txt
 	rm list.txt
 done 
 
