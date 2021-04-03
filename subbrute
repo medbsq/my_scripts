@@ -1,8 +1,8 @@
 #!/bin/bash
 
 host=$1
-resolvers=$2
-wordlist=$3
+resolvers=~/wordlists/resolvers.txt
+wordlist=~/wordlists/sub.txt
 
 echo $host $resolvers $wordlist
 
