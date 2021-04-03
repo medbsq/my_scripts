@@ -4,17 +4,19 @@ host=$1
 resolvers=$2
 wordlist=$3
 
+echo $host $resolvers $wordlist
 
-for i in $( seq 2 10);do
+for i in $( seq 2 6);do
 	cat $host |grep -Po "(\.[\w-]+){$i}$"|sort -u  |sed "s/^.//g" |tee -a  deeplevels.txt
 done
 
-
+cat  deeplevels.txt |sort -uo deeplevels.txt
 
 #bruteforce
-# massdns	 deeplevels.txt -r $resolvers -o S -t A -q |awk -F ". " "{print $1}" |sort -u |httpx -threads 100 |tee -a deeplevels_rslv.txt
 for hs in $(cat  deeplevels.txt);do
-	awk -v h=$host '{print $0"."hs}' $wordlist | massdns -r $resolvers -t A -o S -q |awk -F ". " "{print $1}" |sort -u |httpx -silent  -threads 100 |tee -a deeplevels_rslv.txt
+	awk -v h=$hs '{print $0"."h}' $wordlist  >> list.txt
+	massdns list.txt -r $resolvers -t A -o S -q |awk -F ". " "{print $1}" |sort -u |httpx -silent  -threads 100 |tee -a deeplevels_rslv.txt
+	rm list.txt
 done 
 
 # gett only unique subds
