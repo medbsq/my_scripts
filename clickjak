@@ -40,24 +40,27 @@ def pool(filename,threads):
                 executor.submit(clickjack,url,queue)
                 
     stop_event.set()
+    
 
 
 def Main():
-    parser = optparse.OptionParser(" help: " +
-                                   "clickjack -f <url_fielname>  -t <threads_number> ")
-                                #    "ssrf_header -u <url> -c  <colaborato> -t <threads_number> --cookie <cookies>"
+    parser = optparse.OptionParser("help: \n" +\
+                                   "\t clickjack -f <url_fielname>  -t <threads_number> \n")
+                                #    "\t clickjack -u <url> "
                                 
+    
+    
     # parser.add_option("-u",dest="url",type="string",help="spicify  url")
     parser.add_option("-f",dest="filename",type="string",help="spicify file of urls")
     parser.add_option("-t",dest="threads",type="int",help="spicify nybmer of threads")
     (options ,args) = parser.parse_args()
 
-    threads = 50    
-
-    if (options.filename != None):
+    threads = 50  
+    
+    if (options.threads != None):
+        threads = options.threads  
+    if (options.filename != None) :
         filename = options.filename
-        if (options.threads != None):
-            threads = options.threads
     else:
         print(parser.usage)
         exit(1)
