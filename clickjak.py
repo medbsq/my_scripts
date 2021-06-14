@@ -1,0 +1,71 @@
+from concurrent.futures import ThreadPoolExecutor
+from queue import Queue
+import requests
+import threading
+import optparse
+
+
+
+def clickjack(URL,queue):
+    req=requests.get(URL)
+
+    if not "X-Frame-options"   in req.headers:
+       status="vulnarebale"
+    else:
+        status=" not vulnarebale"
+    queue.put([URL,status])
+
+
+def done(queue,stop_event):
+    while not stop_event.is_set():
+        url= queue.get()
+        if url[0] == "vulnarebale":
+            status="[ \033[32m vulnarebale\033[0m ]"
+        else:
+            status="[ \033[31m not vulnarebale\033[0m ]"
+        print("{} {}".format(url[0],status))
+
+
+
+def pool(filename,threads):
+    print("urls_path=\033[33m{}\033[0m             threads=\033[33m{}\033[0m  ".format(filename,threads))
+    queue= Queue()
+    stop_event =threading.Event()
+    t=threading.Thread(target=done,args=(queue,stop_event),daemon=True)
+    t.start()
+    Lines = open(filename, 'r').readlines()
+    with ThreadPoolExecutor(max_workers=threads) as executor:
+        for i in Lines:
+                url= i.replace("\n", "")
+                executor.submit(clickjack,url,queue)
+                
+    stop_event.set()
+
+
+def Main():
+    parser = optparse.OptionParser(" help: " +
+                                   "clickjack -f <url_fielname>  -t <threads_number> ")
+                                #    "ssrf_header -u <url> -c  <colaborato> -t <threads_number> --cookie <cookies>"
+                                
+    # parser.add_option("-u",dest="url",type="string",help="spicify  url")
+    parser.add_option("-f",dest="filename",type="string",help="spicify file of urls")
+    parser.add_option("-t",dest="threads",type="int",help="spicify nybmer of threads")
+    (options ,args) = parser.parse_args()
+
+    threads = 50    
+
+    if (options.filename != None):
+        filename = options.filename
+        if (options.threads != None):
+            threads = options.threads
+    else:
+        print(parser.usage)
+        exit(1)
+
+    pool(filename,threads)
+
+
+
+if __name__ == '__main__':
+    Main()
+
