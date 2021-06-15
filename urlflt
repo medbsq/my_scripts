@@ -1,0 +1,7 @@
+#!/bin/bash 
+
+cat $1 | sort -u |unfurl format %s://%d%p |sort -uo unique.txt
+for url in $(cat unique.txt);do
+    cat $1 |grep -m 1 $url |tee -a unique_urls
+done 
+rm unique.txt
