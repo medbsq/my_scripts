@@ -1,7 +1,82 @@
 #!/bin/bash 
 
-cat $1 | sort -u |unfurl format %s://%d%p |sort -uo unique.txt
-for url in $(cat unique.txt);do
-    cat $1 |grep -m 1 $url |tee -a unique_urls
-done 
-rm unique.txt
+#global variables
+filename=""
+output=/tmp/url_filtered.txt
+img=0
+
+
+function unique {
+    echo "statrt filtrening"
+    cat $filename  | sort -u | unfurl format %s://%d%p |sort -uo unique.txt
+    for url in $(cat unique.txt);do
+        cat $filename |grep -m 1 $url |tee -a $output
+    
+    done 
+
+    if [[ $img != 0 ]];then 
+        delete_img $output
+    fi
+    cat $output |sort -uo $output
+    rm unique.txt
+}
+
+
+function delete_img {
+    cat $1 |grep -E ".(jpg|jpeg|gif|css|tif|tiff|png|ttf|woff|woff2)$" -v | sort -uo $output
+}
+
+function get_js {
+    cat $1 |grep -P ".js$"|tee -a $1_js.txt
+}
+
+function help {
+    echo "usage:"
+    echo -e "\\t urlflt -f filename -o output "	
+    echo "help:"
+    echo -e "\\t -h	 help"
+    echo -e "\\t -f  set filename"
+    echo -e "\\t -j  get only js file"
+    echo -e "\\t -i	 eliminate image extentions"
+    echo -e "\\t -o	 output file"
+}
+
+function main {
+    if [[ $filename != "" ]];then 
+        unique 
+    else 
+        help
+    fi
+}
+
+
+while getopts ":if:j:o:" OPTION
+do
+	case $OPTION in
+		f)
+            filename="$OPTARG"
+            ;;     
+        j)
+            get_js "$OPTARG"
+            exit
+            ;;
+        i)
+            img=1
+            ;;
+        o)
+            output="$OPTARG"
+            ;;
+		:)
+			help	
+			exit 1
+			;;
+		\?)
+            help
+            exit 1
+            ;;
+
+	esac
+done
+
+
+main 
