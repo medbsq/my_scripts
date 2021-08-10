@@ -1,5 +1,0 @@
-#!/bin/bash
-
-
-cat $1 | xrags -n1 -I{} bash -c "if  echo  $(echo {} |unfurl -u domains) |grep  -f ../scope  ;then echo {}"
-

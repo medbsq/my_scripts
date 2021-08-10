@@ -1,5 +1,10 @@
 #!/bin/bash 
 
+# perspective
+# filter by scope file
+# multi-threads functions
+
+
 #global variables
 filename=""
 output=/tmp/url_filtered.txt

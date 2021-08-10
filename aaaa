@@ -1,0 +1,15 @@
+urls_path=[33maaa[0m         threads=[33m100[0m  cookies=None 
+146 : 403
+{'X-Original-URL': '/.htaccess'} :[31m https://www.apple.com [0m
+{'X-Rewrite-URL:': '/.htaccess'} :[31m https://www.apple.com [0m
+urls_path=[33maaa[0m         threads=[33m100[0m  cookies=None 
+146 : 403
+{'X-Original-URL': '/.htaccess'} :[31m https://www.apple.com [0m
+{'X-Rewrite-URL:': '/.htaccess'} :[31m https://www.apple.com [0m
+error
+urls_path=[33maaa[0m         threads=[33m100[0m  cookies=None 
+146 : 403
+urls_path=[33maaa[0m         threads=[33m100[0m  cookies=None 
+146 : 403
+urls_path=[33maaa[0m         threads=[33m100[0m  cookies=None 
+146 : 403

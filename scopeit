@@ -1,0 +1,34 @@
+#!/bin/bash
+hosts=$1
+scope=$2
+output=$3
+
+function scope {
+for url in $(cat $hosts);do
+	if $(echo $url |unfurl -u domains | grep -f $scope );then
+		echo $url >> scoped_hosts
+	fi
+done
+}
+
+
+function scope2 {
+	cat $hosts |xrags -n1 -I{} bash -c " if    $(cat $scope |grep $(echo {} | unfurl -u domains)) ;then echo  {} >>  scoped_hosts "
+}
+
+if  [[ $# -eq 3 ]];then 
+	scope
+	cat scoped_hosts |tee -a  $3
+	rm scoped_hosts
+elif [[ $# -eq 2 ]];then
+	scope
+	cat scoped_hosts
+else 
+	echo  -e "this script take Hosts file ,scope file an output file \nusage:\n scopeit Hosts scope ooutput "
+	exit
+fi
+
+	
+
+#cat $1 | xrags -n1 -I{} bash -c "if  echo  $(echo {} |unfurl -u domains) |grep  -f ../scope  ;then echo {}"
+

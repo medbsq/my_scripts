@@ -2,13 +2,13 @@
 
 
 
-function crl(){
+function crl() {
 	echo "rapide"
 	curl -s "https://rapiddns.io/subdomain/$1?full=1#result" | grep "<td><a" | cut -d '"' -f 2 | grep http | cut -d '/' -f3 | sed 's/#results//g' | sort -u >> Domains
 	echo "threatcrowd"
 	curl --silent "https://www.threatcrowd.org/searchApi/v2/domain/report/?domain=$1" |jq -r .subdomains[] |sort -u >>  Domains
 	echo "bufferover"
-	curl -s  "https://dns.bufferover.run/dns?q=.$1" |jq -r .FDNS_A[]|cut -d',' -f2|sort -u >> Domains
+	curl -s  "https://dns.bufferover.run/dns?q=.$1" |jq -r .FDNS_A[]|cut -d',' -f2|sort -u >>  Domains
 	echo "riddle"
 	curl -s "https://riddler.io/search/exportcsv?q=pld:$1" | grep -Po "(([\w.-]*)\.([\w]*)\.([A-z]))\w+" | sort -u >> Domains
 	echo "virustotal"
@@ -38,14 +38,19 @@ if [ -f scope ];then
 	assetfinder -subs-only {}|tee -a Domains 
 	subfinder -dL ./scope -all -t 500 |tee -a Domains
 	for i in $(cat ./scope);do
-		~/my_scripts/asset $i 
+		crl $i 
 		~/my_scripts/git_domains -d $i -t $github_api |tee -a Domains
-        done
-	cat Domains|grep ".$i" | sort -u -o Domains
-	cat Domains | httpx -threads 500 |tee -a Hosts 
-	cat Hosts   |sort -u -o Hosts
+    done
+cat Domains | grep -f ./scope    | sort -uo Domains 
+cat Domains | httpx -threads 500 | tee -a Hosts 
+cat Hosts   | sort -u -o Hosts
+
 		
 fi
+
+
+
+echo "get $(cat Hosts|wc) alive  subdomains" |notify 
 # xargs -a Hosts -I@ sh -c 'echo @'|dnsgen -|httpx -threads 1000 -silent |tee -a Hosts2
  #cat Hosts Hosts2 |sort -uo Hosts 
  #rm -rf Hosts2
